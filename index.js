@@ -12,7 +12,7 @@ let indexToEdit;
 const drawCard = () => {
     cardWrapper.innerHTML = "";
 
-    array.forEach((item, index) => {
+    array.forEach((item) => {
         cardWrapper.innerHTML += `<div class="card">
             <p>Title: <span class="card__title">${item.title}</span></p>
             <p>Description: <span class="card__description">${item.description}</span></p>
@@ -79,17 +79,31 @@ const closeModal = () => {
     modalWrapper.style.display = "none";
 };
 
+const isUnique = (title, description) => {
+    let flag = true;
+    array.forEach((item) => {
+        console.log(title, description, array, item);
+        console.log("true");
+        console.log("true");
+        if (item.title == title && item.description == description) {
+            flag = false;
+        }
+    });
+    return flag;
+};
+
 submitBtn.addEventListener("click", (event) => {
     event.preventDefault();
 
     const title = document.querySelector("#title");
     const description = document.querySelector("#description");
-
-    array.push({ title: title.value, description: description.value });
-
-    drawCard();
-    cardWrapper.style.display = "flex";
-    form.reset();
+    if (!isUnique(title.value, description.value)) alert("Enter unique value!");
+    else {
+        array.push({ title: title.value, description: description.value });
+        drawCard();
+        cardWrapper.style.display = "flex";
+        form.reset();
+    }
 });
 
 cardWrapper.addEventListener("click", (event) => {
