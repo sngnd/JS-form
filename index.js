@@ -40,13 +40,13 @@ const deleteInfo = (event) => {
     drawCard(array);
 };
 
-const openModal = () => {
+const openModal = (title, desc) => {
     modalWrapper.style.display = "block";
     const modalInfo = modalWrapper.querySelector(".modal__info");
     modalInfo.innerHTML = `<label for='edit-title'>Title:</label>
-    <input id="edit-title" required>
+    <input id="edit-title" value=${title} required>
     <label for='edit-description'>Description:</label>
-    <input id="edit-description" required>`;
+    <input id="edit-description" value=${desc} required>`;
 };
 
 const editInfo = (event) => {
@@ -55,13 +55,13 @@ const editInfo = (event) => {
     const description = card.querySelector(".card__description");
 
     if (isInArray(title, description)) {
-        openModal();
+        openModal(title.textContent, description.textContent);
 
-        return (index = array.findIndex(
+        return array.findIndex(
             (item) =>
             item.title === title.textContent &&
             item.description === description.textContent
-        )); // return index of element to edit
+        ); // return index of element to edit
     }
 };
 
@@ -118,4 +118,8 @@ okBtn.addEventListener("click", (event) => {
 
     closeModal();
     drawCard();
+});
+
+modalWrapper.addEventListener("click", (event) => {
+    if (!event.target.closest(".modal__content")) closeModal();
 });
