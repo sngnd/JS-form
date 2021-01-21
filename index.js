@@ -7,8 +7,6 @@ const modalWrapper = document.querySelector(".modal__wrapper");
 const closeBtn = document.querySelector("#closeBtn");
 const okBtn = document.querySelector("#okBtn");
 
-let indexToEdit;
-
 const drawCard = () => {
     cardWrapper.innerHTML = "";
 
@@ -22,7 +20,7 @@ const drawCard = () => {
     });
 };
 
-const deleteFromArray = (title, desc) => {
+const deleteFromArray = (tit, desc) => {
     array.splice(
         array.findIndex(
             (item) => item.title === title && item.description === desc
@@ -31,7 +29,7 @@ const deleteFromArray = (title, desc) => {
     );
 };
 
-const deleteInfo = (event) => {
+const deleteBtnHandler = (event) => {
     const card = event.target.closest(".card");
     const title = card.querySelector(".card__title").textContent;
     const description = card.querySelector(".card__description").textContent;
@@ -49,7 +47,7 @@ const openModal = (title, desc) => {
     <input id="edit-description" value=${desc} required>`;
 };
 
-const editInfo = (event) => {
+const editBtnHandler = (event) => {
     const card = event.target.closest(".card");
     const title = card.querySelector(".card__title");
     const description = card.querySelector(".card__description");
@@ -57,12 +55,31 @@ const editInfo = (event) => {
     if (isInArray(title, description)) {
         openModal(title.textContent, description.textContent);
 
-        return array.findIndex(
+        const indexToEdit = array.findIndex(
             (item) =>
             item.title === title.textContent &&
             item.description === description.textContent
-        ); // return index of element to edit
+        );
+
+        okBtn.addEventListener("click", (event) =>
+            okBtnHandler(event, indexToEdit)
+        );
     }
+};
+
+const okBtnHandler = (event, indexToEdit) => {
+    event.preventDefault();
+
+    const editDescription = document.querySelector("#edit-description").value;
+    const editTitle = document.querySelector("#edit-title").value;
+
+    array.splice(indexToEdit, 1, {
+        title: editTitle,
+        description: editDescription,
+    });
+
+    closeModal();
+    drawCard();
 };
 
 const isInArray = (title, description) => {
@@ -82,9 +99,6 @@ const closeModal = () => {
 const isUnique = (title, description) => {
     let flag = true;
     array.forEach((item) => {
-        console.log(title, description, array, item);
-        console.log("true");
-        console.log("true");
         if (item.title == title && item.description == description) {
             flag = false;
         }
@@ -108,30 +122,14 @@ submitBtn.addEventListener("click", (event) => {
 
 cardWrapper.addEventListener("click", (event) => {
     if (event.target.closest("#deleteBtn")) {
-        deleteInfo(event);
+        deleteBtnHandler(event);
     } else if (event.target.closest("#editBtn")) {
-        indexToEdit = editInfo(event);
+        indexToEdit = editBtnHandler(event);
     }
 });
 
 closeBtn.addEventListener("click", () => {
     closeModal();
-});
-
-okBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    const editDescription = document.querySelector("#edit-description").value;
-    const editTitle = document.querySelector("#edit-title").value;
-
-    let editObj = {};
-    editObj.title = editTitle;
-    editObj.description = editDescription;
-
-    array[indexToEdit] = editObj;
-
-    closeModal();
-    drawCard();
 });
 
 modalWrapper.addEventListener("click", (event) => {
